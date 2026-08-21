@@ -9,12 +9,12 @@ const FEATURES = [
   {
     title: "Hardware comparison",
     description:
-      "Ten accelerators from V100 through B200, MI300X, and TPU v4/v5e/v5p, with sourced peak throughput, power draw, and representative cloud pricing.",
+      "Eleven accelerators from V100 through B200, MI300X, and TPU v4/v5e/v5p, with sourced peak throughput, power draw, and representative cloud pricing.",
   },
   {
     title: "Validated against real runs",
     description:
-      "The core formula is checked against GPT-3, Llama 2 70B, and Llama 3.1 405B — landing within 1% of their publicly reported compute figures.",
+      "The core formula is checked against five public training runs — GPT-3, Llama 2 70B, Llama 3.1 405B, PaLM 540B, and Chinchilla 70B — landing within 2% of their publicly reported compute figures.",
   },
   {
     title: "Regulatory thresholds",

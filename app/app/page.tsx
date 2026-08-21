@@ -18,7 +18,7 @@ export default function Dashboard() {
           <p className="max-w-3xl text-sm text-neutral-400">
             Estimate the compute, chips, energy, cost, and training time behind an AI
             training run, compare hardware options, and check the underlying formulas
-            against three public training runs.
+            against five public training runs.
           </p>
         </header>
         <EstimatorApp />

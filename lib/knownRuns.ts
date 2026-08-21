@@ -1,8 +1,8 @@
 import { KnownRun } from "./types";
 
 /**
- * Three public training runs spanning three hardware generations (V100 ->
- * A100 -> H100), used to sanity-check the estimator formulas in
+ * Five public training runs spanning four hardware generations (TPU v4,
+ * V100, A100, H100), used to sanity-check the estimator formulas in
  * tests/estimator.test.ts and displayed in the app's ValidationTable.
  *
  * Every numeric field notes whether it's directly published by the model's
@@ -57,5 +57,34 @@ export const KNOWN_RUNS: KnownRun[] = [
       "Meta AI, 'The Llama 3 Herd of Models' (2024): 405B model pre-trained on up to 16K H100-80GB GPUs, ~3.8x10^25 FLOPs, over ~54 days.",
     notes:
       "Parameter count, token count, chip count, training duration, and total FLOPs are all directly reported by Meta — the most fully-specified of the three runs.",
+  },
+  {
+    id: "palm-540b",
+    name: "PaLM (540B)",
+    parameters: 540_000_000_000,
+    tokens: 780_000_000_000,
+    chipId: "tpu-v4",
+    chipCount: 6144,
+    chipCountProvenance: "reported",
+    reportedFlops: 2.56e24,
+    reportedMfu: 0.462,
+    source:
+      "Chowdhery et al. 2022, 'PaLM: Scaling Language Modeling with Pathways': 540B model, 780B tokens, trained on 6,144 TPU v4 chips (two Pods of 3,072) with a reported training efficiency (model FLOPs utilization) of 46.2%.",
+    notes:
+      "The only run here where MFU itself is directly reported rather than assumed — Google explicitly measured and published their achieved hardware utilization, which is the norm this project otherwise has to estimate for every other run (including its own live estimator).",
+  },
+  {
+    id: "chinchilla-70b",
+    name: "Chinchilla (70B)",
+    parameters: 70_000_000_000,
+    tokens: 1_400_000_000_000,
+    chipId: "tpu-v4",
+    chipCount: 256,
+    chipCountProvenance: "estimated",
+    reportedFlops: 5.76e23,
+    source:
+      "Hoffmann et al. 2022, 'Training Compute-Optimal Large Language Models' (the Chinchilla paper): 70B model, 1.4T tokens, ~5.76x10^23 FLOPs of training compute.",
+    notes:
+      "reportedFlops is directly stated in the paper (it's the foundational result behind the 6ND-style compute-optimal scaling laws this whole estimator relies on), but the paper doesn't specify a chip count/training duration for this particular model, so chipCount and chip choice (TPU v4, DeepMind's typical training hardware in this era) here are illustrative assumptions only.",
   },
 ];

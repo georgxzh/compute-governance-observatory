@@ -18,7 +18,10 @@ This covers the project's first three action-plan milestones:
   feature.
 
 Publishing the MVP and gathering outside feedback is the last step of the
-Week 3 commitment and happens separately from this codebase.
+Week 3 commitment and happens separately from this codebase. Since then,
+the site has also gained a gated landing page (`/`, linking to the
+dashboard at `/app`) and two more validated training runs (PaLM 540B and
+Chinchilla 70B), beyond the written action-plan milestones.
 
 ## Methodology
 
@@ -51,15 +54,15 @@ self-hosting.
 
 ## Hardware comparison table
 
-`lib/hardware.ts` has specs for V100, A100 (40GB/80GB), H100, H200, B200,
-AMD MI300X, and Google TPU v4/v5e/v5p: peak dense BF16/FP16 throughput, TDP,
-memory, release year, and a representative on-demand cloud $/hr (which
-varies a lot by provider/region/contract — treat it as an editable default,
-not a quote).
+`lib/hardware.ts` has specs for V100, A100 (40GB/80GB), H100, H800, H200,
+B200, AMD MI300X, and Google TPU v4/v5e/v5p: peak dense BF16/FP16
+throughput, TDP, memory, release year, and a representative on-demand cloud
+$/hr (which varies a lot by provider/region/contract — treat it as an
+editable default, not a quote).
 
-## Validated against three public training runs
+## Validated against five public training runs
 
-`lib/knownRuns.ts` holds three fixtures spanning three hardware generations,
+`lib/knownRuns.ts` holds five fixtures spanning four hardware generations,
 each with its numbers traced to a specific public source and a note on what
 that source actually reports vs. what's assumed to fill a gap:
 
@@ -70,13 +73,23 @@ that source actually reports vs. what's assumed to fill a gap:
 - **Llama 3.1 (405B)** — reported parameters, tokens, chip count (16,384
   H100s), duration (~54 days), and total compute (~3.8x10^25 FLOPs) from
   Meta's "Llama 3 Herd of Models" paper — the most fully-specified of the
-  three.
+  five.
+- **PaLM (540B)** — reported parameters, tokens, chip count (6,144 TPU v4),
+  and — uniquely among these fixtures — a directly reported achieved MFU
+  (46.2%) from Google's PaLM paper, rather than an assumed one.
+- **Chinchilla (70B)** — reported total compute (~5.76x10^23 FLOPs) from
+  the paper that established the compute-optimal scaling laws this whole
+  estimator's 6ND formula is built on.
 
 `tests/estimator.test.ts` checks the 6ND formula against each run's reported
-FLOPs (within 10%), and, for the two runs with published chip/time data,
-checks that the *implied* MFU needed to reproduce their reported chip-hours
-from the 6ND estimate falls in the realistic 0.2-0.65 band. The same
-comparison is shown live in the app's validation table.
+FLOPs (within 10%), checks that the *implied* MFU needed to reproduce
+Llama 2/3.1's reported chip-hours from the 6ND estimate falls in the
+realistic 0.2-0.65 band, and — for PaLM specifically — feeds its genuinely
+reported MFU into the estimator's own time formula and checks the resulting
+duration lands in a plausible range. The same comparisons are shown live in
+the app's validation table, where PaLM's estimator-duration figure is
+labeled `Calculated` rather than `Estimated`, since it's derived from a
+reported MFU instead of an assumed one.
 
 ## Regulatory thresholds
 

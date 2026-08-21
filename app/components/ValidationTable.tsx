@@ -13,7 +13,7 @@ export default function ValidationTable() {
   return (
     <div className="flex flex-col gap-3">
       <h2 className="text-lg font-semibold text-neutral-100">
-        Validation against 3 public training runs
+        Validation against {KNOWN_RUNS.length} public training runs
       </h2>
       <div className="overflow-x-auto rounded-lg border border-neutral-800">
         <table className="w-full min-w-[840px] text-left text-sm">
@@ -31,7 +31,10 @@ export default function ValidationTable() {
           <tbody>
             {KNOWN_RUNS.map((run) => {
               const chip = getChip(run.chipId);
-              const mfu = DEFAULT_MFU_BY_VENDOR[chip.vendor] ?? 0.4;
+              const mfu = run.reportedMfu ?? DEFAULT_MFU_BY_VENDOR[chip.vendor] ?? 0.4;
+              // If MFU is itself a reported figure, the duration derived from it is a
+              // deterministic calculation from reported inputs, not a fresh assumption.
+              const durationProvenance = run.reportedMfu ? "calculated" : "estimated";
               const output = estimate({
                 parameters: run.parameters,
                 tokens: run.tokens,
@@ -88,9 +91,10 @@ export default function ValidationTable() {
                   <td className="px-3 py-2">
                     <div className="flex flex-col gap-1">
                       <span>
-                        {formatDays(output.trainingDays)} (at {formatPercent(mfu)} MFU)
+                        {formatDays(output.trainingDays)} (at {formatPercent(mfu)} MFU
+                        {run.reportedMfu ? ", reported" : ""})
                       </span>
-                      <ProvenanceBadge provenance="estimated" />
+                      <ProvenanceBadge provenance={durationProvenance} />
                     </div>
                   </td>
                 </tr>
@@ -101,9 +105,12 @@ export default function ValidationTable() {
       </div>
       <div className="flex flex-col gap-1 text-xs text-neutral-500">
         <p>
-          * Estimator duration uses a default MFU per chip vendor since none of these sources
-          publish an MFU directly — hence its <span className="italic">Estimated</span> label
-          even where the underlying compute figure is <span className="italic">Reported</span>.
+          * Estimator duration uses a default MFU per chip vendor, since most of these sources
+          don&apos;t publish an MFU directly — hence its <span className="italic">Estimated</span>{" "}
+          label even where the underlying compute figure is <span className="italic">Reported</span>.
+          PaLM is the exception: Google directly reported their achieved MFU, so its estimator
+          duration is <span className="italic">Calculated</span> from that reported figure
+          instead of an assumed one.
         </p>
         {KNOWN_RUNS.map((run) => (
           <p key={run.id}>
