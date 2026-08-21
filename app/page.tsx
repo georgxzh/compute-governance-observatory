@@ -14,6 +14,16 @@ export default function Home() {
         </header>
         <EstimatorApp />
       </main>
+      <a
+        href="https://bluedot.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Built following a BlueDot Impact course"
+        className="fixed bottom-4 right-4 opacity-25 grayscale transition-opacity hover:opacity-70"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/bluedot-impact-logo.svg" alt="BlueDot Impact" className="h-4 w-auto" />
+      </a>
     </div>
   );
 }
