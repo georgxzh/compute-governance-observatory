@@ -5,6 +5,7 @@ import EstimatorForm, { FormState } from "./EstimatorForm";
 import ResultsPanel from "./ResultsPanel";
 import HardwareTable from "./HardwareTable";
 import ValidationTable from "./ValidationTable";
+import ThresholdPanel from "./ThresholdPanel";
 import { DEFAULT_ELECTRICITY_USD_PER_KWH, DEFAULT_MFU_BY_VENDOR, DEFAULT_PUE, estimate } from "@/lib/estimator";
 import { getChip } from "@/lib/hardware";
 
@@ -53,7 +54,10 @@ export default function EstimatorApp() {
     <div className="flex flex-col gap-10">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,380px)_1fr]">
         <EstimatorForm value={form} onChange={handleFormChange} />
-        <ResultsPanel output={output} />
+        <div className="flex flex-col gap-8">
+          <ResultsPanel output={output} />
+          <ThresholdPanel trainingFlops={output.trainingFlops} />
+        </div>
       </div>
       <HardwareTable selectedChipId={form.chipId} />
       <ValidationTable />

@@ -1,5 +1,13 @@
 export type Precision = "fp16" | "bf16";
 
+/**
+ * How confident is this number?
+ * - "reported": stated directly by a primary source (a paper, a datasheet, a law)
+ * - "calculated": deterministically derived from reported inputs via a formula
+ * - "estimated": fills a gap the sources don't cover, using an assumption
+ */
+export type Provenance = "reported" | "calculated" | "estimated";
+
 export interface Chip {
   /** Unique key, e.g. "h100-sxm" */
   id: string;
@@ -29,16 +37,28 @@ export interface KnownRun {
   tokens: number;
   chipId: string;
   chipCount: number;
+  /** Is the chipCount above itself published by the source, or an assumption? */
+  chipCountProvenance: Provenance;
   /** Reported training compute in FLOPs, if the source publishes one directly (else undefined) */
   reportedFlops?: number;
   /** Reported wall-clock training time in days, if published (or derived, see notes) */
   reportedTrainingDays?: number;
+  /** Is reportedTrainingDays itself published directly, or derived via an assumption? */
+  trainingDaysProvenance?: Provenance;
   /** Reported total GPU/chip-hours, if that's what the source actually publishes */
   reportedChipHours?: number;
   /** Reported/implied MFU, if the source states or lets us derive one */
   reportedMfu?: number;
   source: string;
   notes?: string;
+}
+
+export interface Threshold {
+  id: string;
+  name: string;
+  /** Compute threshold, in FLOPs */
+  flops: number;
+  source: string;
 }
 
 export interface EstimatorInput {

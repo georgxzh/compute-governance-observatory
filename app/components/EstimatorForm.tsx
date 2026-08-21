@@ -1,6 +1,8 @@
 "use client";
 
 import { HARDWARE } from "@/lib/hardware";
+import { Provenance } from "@/lib/types";
+import ProvenanceBadge from "./ProvenanceBadge";
 
 export interface FormState {
   parametersBillions: number;
@@ -25,6 +27,7 @@ function NumberField({
   step,
   min,
   hint,
+  provenance,
 }: {
   label: string;
   value: number;
@@ -32,10 +35,14 @@ function NumberField({
   step?: number;
   min?: number;
   hint?: string;
+  provenance?: Provenance;
 }) {
   return (
     <label className="flex flex-col gap-1 text-sm">
-      <span className="font-medium text-neutral-200">{label}</span>
+      <span className="flex items-center gap-2 font-medium text-neutral-200">
+        {label}
+        {provenance && <ProvenanceBadge provenance={provenance} />}
+      </span>
       <input
         type="number"
         className="rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 focus:border-neutral-400 focus:outline-none"
@@ -108,6 +115,7 @@ export default function EstimatorForm({ value, onChange }: Props) {
           step={0.01}
           min={0}
           hint="Achieved / peak throughput, typically 0.3-0.55"
+          provenance="estimated"
         />
       </div>
 
@@ -119,6 +127,7 @@ export default function EstimatorForm({ value, onChange }: Props) {
           step={0.01}
           min={1}
           hint="Power overhead multiplier, ~1.1 typical"
+          provenance="estimated"
         />
         <NumberField
           label="Electricity ($/kWh)"
@@ -126,6 +135,7 @@ export default function EstimatorForm({ value, onChange }: Props) {
           onChange={(n) => set("electricityUsdPerKwh", n)}
           step={0.01}
           min={0}
+          provenance="estimated"
         />
       </div>
 
@@ -136,6 +146,7 @@ export default function EstimatorForm({ value, onChange }: Props) {
         step={0.1}
         min={0}
         hint="Override the chip's default on-demand rate"
+        provenance="estimated"
       />
     </div>
   );

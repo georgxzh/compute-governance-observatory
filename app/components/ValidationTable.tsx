@@ -6,7 +6,8 @@ import {
   DEFAULT_PUE,
   estimate,
 } from "@/lib/estimator";
-import { formatDays, formatFlops, formatPercent } from "@/lib/format";
+import { formatCount, formatDays, formatFlops, formatPercent } from "@/lib/format";
+import ProvenanceBadge from "./ProvenanceBadge";
 
 export default function ValidationTable() {
   return (
@@ -15,14 +16,15 @@ export default function ValidationTable() {
         Validation against 3 public training runs
       </h2>
       <div className="overflow-x-auto rounded-lg border border-neutral-800">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full min-w-[840px] text-left text-sm">
           <thead className="bg-neutral-900 text-neutral-400">
             <tr>
               <th className="px-3 py-2 font-medium">Run</th>
+              <th className="px-3 py-2 font-medium">Chips</th>
               <th className="px-3 py-2 font-medium">Reported compute</th>
               <th className="px-3 py-2 font-medium">Estimator (6ND)</th>
               <th className="px-3 py-2 font-medium">Delta</th>
-              <th className="px-3 py-2 font-medium">Reported duration</th>
+              <th className="px-3 py-2 font-medium">Duration</th>
               <th className="px-3 py-2 font-medium">Estimator duration*</th>
             </tr>
           </thead>
@@ -47,21 +49,49 @@ export default function ValidationTable() {
                 <tr key={run.id} className="text-neutral-300 align-top">
                   <td className="px-3 py-2 text-neutral-100">{run.name}</td>
                   <td className="px-3 py-2">
-                    {run.reportedFlops ? formatFlops(run.reportedFlops) : "not published"}
+                    <div className="flex flex-col gap-1">
+                      <span>{formatCount(run.chipCount)}</span>
+                      <ProvenanceBadge provenance={run.chipCountProvenance} />
+                    </div>
                   </td>
-                  <td className="px-3 py-2">{formatFlops(output.trainingFlops)}</td>
+                  <td className="px-3 py-2">
+                    {run.reportedFlops ? (
+                      <div className="flex flex-col gap-1">
+                        <span>{formatFlops(run.reportedFlops)}</span>
+                        <ProvenanceBadge provenance="reported" />
+                      </div>
+                    ) : (
+                      <span className="text-neutral-500">not published</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2">
+                    <div className="flex flex-col gap-1">
+                      <span>{formatFlops(output.trainingFlops)}</span>
+                      <ProvenanceBadge provenance="calculated" />
+                    </div>
+                  </td>
                   <td className="px-3 py-2">
                     {delta !== undefined ? formatPercent(delta) : "—"}
                   </td>
                   <td className="px-3 py-2">
-                    {run.reportedTrainingDays
-                      ? formatDays(run.reportedTrainingDays)
-                      : run.reportedChipHours
-                        ? `${formatDays(run.reportedChipHours / run.chipCount / 24)} (from ${run.reportedChipHours.toLocaleString()} chip-hrs)`
-                        : "not published"}
+                    {run.reportedTrainingDays ? (
+                      <div className="flex flex-col gap-1">
+                        <span>{formatDays(run.reportedTrainingDays)}</span>
+                        {run.trainingDaysProvenance && (
+                          <ProvenanceBadge provenance={run.trainingDaysProvenance} />
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-neutral-500">not published</span>
+                    )}
                   </td>
                   <td className="px-3 py-2">
-                    {formatDays(output.trainingDays)} (at {formatPercent(mfu)} MFU, assumed)
+                    <div className="flex flex-col gap-1">
+                      <span>
+                        {formatDays(output.trainingDays)} (at {formatPercent(mfu)} MFU)
+                      </span>
+                      <ProvenanceBadge provenance="estimated" />
+                    </div>
                   </td>
                 </tr>
               );
@@ -72,8 +102,8 @@ export default function ValidationTable() {
       <div className="flex flex-col gap-1 text-xs text-neutral-500">
         <p>
           * Estimator duration uses a default MFU per chip vendor since none of these sources
-          publish an MFU directly — see each run&apos;s notes below for exactly what is
-          reported vs. assumed.
+          publish an MFU directly — hence its <span className="italic">Estimated</span> label
+          even where the underlying compute figure is <span className="italic">Reported</span>.
         </p>
         {KNOWN_RUNS.map((run) => (
           <p key={run.id}>

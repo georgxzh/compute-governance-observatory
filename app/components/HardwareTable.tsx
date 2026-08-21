@@ -1,20 +1,32 @@
 import { HARDWARE } from "@/lib/hardware";
 import { formatUsd } from "@/lib/format";
+import ProvenanceBadge from "./ProvenanceBadge";
+
+function ColumnHeader({ label, provenance }: { label: string; provenance: "reported" | "estimated" }) {
+  return (
+    <th className="px-3 py-2 font-medium">
+      <div className="flex flex-col gap-1">
+        <span>{label}</span>
+        <ProvenanceBadge provenance={provenance} />
+      </div>
+    </th>
+  );
+}
 
 export default function HardwareTable({ selectedChipId }: { selectedChipId?: string }) {
   return (
     <div className="flex flex-col gap-3">
       <h2 className="text-lg font-semibold text-neutral-100">Hardware comparison</h2>
       <div className="overflow-x-auto rounded-lg border border-neutral-800">
-        <table className="w-full min-w-[640px] text-left text-sm">
+        <table className="w-full min-w-[720px] text-left text-sm">
           <thead className="bg-neutral-900 text-neutral-400">
             <tr>
-              <th className="px-3 py-2 font-medium">Chip</th>
-              <th className="px-3 py-2 font-medium">Peak BF16/FP16 TFLOP/s</th>
-              <th className="px-3 py-2 font-medium">TDP (W)</th>
-              <th className="px-3 py-2 font-medium">Memory (GB)</th>
-              <th className="px-3 py-2 font-medium">Cloud $/hr</th>
-              <th className="px-3 py-2 font-medium">Released</th>
+              <th className="px-3 py-2 font-medium align-bottom">Chip</th>
+              <ColumnHeader label="Peak BF16/FP16 TFLOP/s" provenance="reported" />
+              <ColumnHeader label="TDP (W)" provenance="reported" />
+              <ColumnHeader label="Memory (GB)" provenance="reported" />
+              <ColumnHeader label="Cloud $/hr" provenance="estimated" />
+              <th className="px-3 py-2 font-medium align-bottom">Released</th>
             </tr>
           </thead>
           <tbody>
@@ -39,9 +51,10 @@ export default function HardwareTable({ selectedChipId }: { selectedChipId?: str
         </table>
       </div>
       <p className="text-xs text-neutral-500">
-        Peak FLOPs are dense (no structured sparsity) matmul throughput at each chip&apos;s
-        primary training precision. Cloud $/hr figures are representative on-demand list
-        prices — they vary widely by provider, region, and contract terms.
+        Peak FLOPs, TDP, and memory are <span className="italic">reported</span> manufacturer
+        datasheet specs. Cloud $/hr is an <span className="italic">estimated</span>,
+        representative on-demand list price — it varies widely by provider, region, and
+        contract terms.
       </p>
     </div>
   );

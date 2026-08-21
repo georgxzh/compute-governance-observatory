@@ -19,6 +19,7 @@ export const KNOWN_RUNS: KnownRun[] = [
     tokens: 300_000_000_000,
     chipId: "v100-sxm2",
     chipCount: 1024,
+    chipCountProvenance: "estimated",
     reportedFlops: 3.14e23,
     source:
       "Brown et al. 2020, 'Language Models are Few-Shot Learners' (GPT-3 paper), Appendix D / Table D.1: total training compute of ~3.14x10^23 FLOPs (3640 petaflop/s-days).",
@@ -32,8 +33,10 @@ export const KNOWN_RUNS: KnownRun[] = [
     tokens: 2_000_000_000_000,
     chipId: "a100-80gb-sxm",
     chipCount: 2048,
+    chipCountProvenance: "estimated",
     reportedChipHours: 1_720_320,
     reportedTrainingDays: 1_720_320 / 2048 / 24,
+    trainingDaysProvenance: "estimated",
     source:
       "Touvron et al. 2023, 'Llama 2: Open Foundation and Fine-Tuned Chat Models', Table 2: 1,720,320 A100-80GB GPU-hours for the 70B model.",
     notes:
@@ -46,8 +49,10 @@ export const KNOWN_RUNS: KnownRun[] = [
     tokens: 15_600_000_000_000,
     chipId: "h100-sxm",
     chipCount: 16384,
+    chipCountProvenance: "reported",
     reportedFlops: 3.8e25,
     reportedTrainingDays: 54,
+    trainingDaysProvenance: "reported",
     source:
       "Meta AI, 'The Llama 3 Herd of Models' (2024): 405B model pre-trained on up to 16K H100-80GB GPUs, ~3.8x10^25 FLOPs, over ~54 days.",
     notes:

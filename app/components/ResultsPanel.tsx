@@ -1,5 +1,6 @@
 import { EstimatorOutput } from "@/lib/types";
 import { formatDays, formatEnergy, formatFlops, formatScientific, formatUsd } from "@/lib/format";
+import ProvenanceBadge from "./ProvenanceBadge";
 
 function ResultCard({
   label,
@@ -12,7 +13,10 @@ function ResultCard({
 }) {
   return (
     <div className="flex flex-col gap-1 rounded-lg border border-neutral-800 bg-neutral-950 p-4">
-      <span className="text-xs uppercase tracking-wide text-neutral-500">{label}</span>
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs uppercase tracking-wide text-neutral-500">{label}</span>
+        <ProvenanceBadge provenance="calculated" />
+      </div>
       <span className="text-2xl font-semibold text-neutral-100">{value}</span>
       {sublabel && <span className="text-xs text-neutral-500">{sublabel}</span>}
     </div>
@@ -42,6 +46,11 @@ export default function ResultsPanel({ output }: { output: EstimatorOutput }) {
           sublabel="raw energy only, not the same as rental cost"
         />
       </div>
+      <p className="text-xs text-neutral-500">
+        Every card above is <span className="italic">calculated</span> — deterministically
+        derived from your inputs via the formulas in the estimator, not an independently
+        verified figure.
+      </p>
     </div>
   );
 }

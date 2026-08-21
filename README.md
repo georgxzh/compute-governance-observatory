@@ -7,10 +7,15 @@ compute-governance research can get a sense of how large a given run is
 without piecing it together from scattered papers, datasheets, and cloud
 pricing pages.
 
-This is the Week 1 milestone from the project's action plan (due Aug 13):
-build the core estimator + hardware comparison table, and test it against at
-least three public training runs. Regulatory thresholds, reported/estimated
-labeling, and the policy-scenario feature are later milestones.
+This covers the project's first two action-plan milestones:
+- **Week 1 (Aug 13):** the core estimator + hardware comparison table,
+  tested against three public training runs.
+- **Week 2 (Aug 20):** editable regulatory thresholds (starting with the EU
+  AI Act's 10^25 FLOP threshold), and labeling every figure the app shows as
+  **reported**, **calculated**, or **estimated**.
+
+Company/country visualizations, an algorithmic-efficiency adjustment, and
+the policy-scenario feature are later milestones.
 
 ## Methodology
 
@@ -69,6 +74,33 @@ FLOPs (within 10%), and, for the two runs with published chip/time data,
 checks that the *implied* MFU needed to reproduce their reported chip-hours
 from the 6ND estimate falls in the realistic 0.2-0.65 band. The same
 comparison is shown live in the app's validation table.
+
+## Regulatory thresholds
+
+`lib/thresholds.ts` defines the starting threshold: the EU AI Act's
+Article 51(2) presumption that a general-purpose AI model has systemic risk
+once its training compute exceeds 10^25 FLOPs. The app's threshold panel
+compares the current estimate's compute against every threshold live, edits
+a threshold's FLOPs value in place, and supports adding custom thresholds —
+useful for tracking proposed or non-EU rules (e.g. US export-control compute
+caps) as they're defined.
+
+## Reported / calculated / estimated labeling
+
+Every figure the app displays is tagged with where it came from, via a
+shared `Provenance` type (`reported` | `calculated` | `estimated`) and a
+`ProvenanceBadge` component used consistently across the UI:
+
+- **Reported** — stated directly by a primary source: a paper, a datasheet,
+  a regulation's text (e.g. hardware peak FLOPs, the known runs' published
+  compute/GPU-hours, the EU AI Act's default 10^25 threshold).
+- **Calculated** — deterministically derived from reported inputs via a
+  formula (e.g. every card in the live results panel, the 6ND estimate in
+  the validation table).
+- **Estimated** — fills a gap the sources don't cover, using an assumption
+  (e.g. MFU/PUE/electricity-price defaults, representative cloud $/hr,
+  GPT-3's illustrative chip count, or any threshold value once it's been
+  edited away from its reported default).
 
 ## Known limitations
 
