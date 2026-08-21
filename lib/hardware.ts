@@ -59,6 +59,19 @@ export const HARDWARE: Chip[] = [
     source: "NVIDIA H100 datasheet (989 TFLOPS BF16 tensor-core, dense)",
   },
   {
+    id: "h800-sxm",
+    name: "NVIDIA H800 SXM (80GB)",
+    vendor: "NVIDIA",
+    releaseYear: 2023,
+    peakFlopsPerSecond: 989e12,
+    precision: "bf16",
+    tdpWatts: 700,
+    memoryGB: 80,
+    cloudUsdPerHour: 2.0,
+    source:
+      "NVIDIA H800 datasheet: an export-control-compliant H100 variant sold in China with reduced NVLink interconnect bandwidth but the same BF16 compute as H100.",
+  },
+  {
     id: "h200-sxm",
     name: "NVIDIA H200 SXM (141GB)",
     vendor: "NVIDIA",

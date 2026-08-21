@@ -7,15 +7,18 @@ compute-governance research can get a sense of how large a given run is
 without piecing it together from scattered papers, datasheets, and cloud
 pricing pages.
 
-This covers the project's first two action-plan milestones:
+This covers the project's first three action-plan milestones:
 - **Week 1 (Aug 13):** the core estimator + hardware comparison table,
   tested against three public training runs.
 - **Week 2 (Aug 20):** editable regulatory thresholds (starting with the EU
   AI Act's 10^25 FLOP threshold), and labeling every figure the app shows as
   **reported**, **calculated**, or **estimated**.
+- **Week 3 (Aug 27):** company/country compute visualizations, an
+  algorithmic-efficiency adjustment, and an illustrative policy-scenario
+  feature.
 
-Company/country visualizations, an algorithmic-efficiency adjustment, and
-the policy-scenario feature are later milestones.
+Publishing the MVP and gathering outside feedback is the last step of the
+Week 3 commitment and happens separately from this codebase.
 
 ## Methodology
 
@@ -101,6 +104,42 @@ shared `Provenance` type (`reported` | `calculated` | `estimated`) and a
   (e.g. MFU/PUE/electricity-price defaults, representative cloud $/hr,
   GPT-3's illustrative chip count, or any threshold value once it's been
   edited away from its reported default).
+
+## Company/country compute comparison
+
+`lib/notableModels.ts` holds a small set of notable models (GPT-3, GPT-4,
+Gemini 1.0 Ultra, Llama 2 70B, Llama 3.1 405B, Qwen2.5 72B, DeepSeek-V3,
+Falcon 180B) spanning the United States, China, and the UAE, each with its
+own `reported`/`calculated`/`estimated` compute figure and source. The
+company/country view sums these by organization or country and renders them
+on a log-scale bar chart — training compute spans many orders of magnitude,
+so a linear scale would make smaller runs invisible. This is a comparison of
+each org's/country's most compute-intensive *known* model, not a measure of
+total national or organizational compute infrastructure.
+
+## Algorithmic efficiency adjustment
+
+`lib/algorithmicEfficiency.ts` models the well-documented effect that the
+same capability level needs less raw compute over time as architectures,
+data, and training recipes improve (Epoch AI's "Algorithmic progress in
+language models" (2024) estimates this "compute-equivalent gain" doubles
+roughly every 5-14 months). The app's panel shows what a given compute
+figure would be equivalent to under an earlier year's algorithms, with the
+model year, baseline year, and doubling time all editable — the doubling
+time in particular is actively debated, so it's exposed as an assumption,
+not baked in as a constant.
+
+## Policy scenario (illustrative)
+
+The policy-scenario table cross-references `lib/notableModels.ts` against
+the default regulatory thresholds, showing which already-trained models
+would be flagged by each threshold as currently set. This directly reflects
+a limitation the project's own strategic assessment calls out: it can show
+which known runs would cross a threshold, but it cannot predict how a lab
+would actually respond to a new rule, or how "training compute" would be
+defined or audited in practice — so the table is captioned as illustrative
+only, and always compares against thresholds' original default values
+rather than whatever a user has edited them to.
 
 ## Known limitations
 

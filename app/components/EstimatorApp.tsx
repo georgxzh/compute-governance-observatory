@@ -6,6 +6,9 @@ import ResultsPanel from "./ResultsPanel";
 import HardwareTable from "./HardwareTable";
 import ValidationTable from "./ValidationTable";
 import ThresholdPanel from "./ThresholdPanel";
+import AlgorithmicEfficiencyPanel from "./AlgorithmicEfficiencyPanel";
+import CompanyCountryChart from "./CompanyCountryChart";
+import PolicyScenarioTable from "./PolicyScenarioTable";
 import { DEFAULT_ELECTRICITY_USD_PER_KWH, DEFAULT_MFU_BY_VENDOR, DEFAULT_PUE, estimate } from "@/lib/estimator";
 import { getChip } from "@/lib/hardware";
 
@@ -57,10 +60,13 @@ export default function EstimatorApp() {
         <div className="flex flex-col gap-8">
           <ResultsPanel output={output} />
           <ThresholdPanel trainingFlops={output.trainingFlops} />
+          <AlgorithmicEfficiencyPanel trainingFlops={output.trainingFlops} />
         </div>
       </div>
       <HardwareTable selectedChipId={form.chipId} />
       <ValidationTable />
+      <CompanyCountryChart />
+      <PolicyScenarioTable />
     </div>
   );
 }
