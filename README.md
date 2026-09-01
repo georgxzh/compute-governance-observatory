@@ -21,8 +21,14 @@ Publishing the MVP and gathering outside feedback is the last step of the
 Week 3 commitment and happens separately from this codebase. Since then,
 the site has also gained a gated landing page (`/`, linking to the
 dashboard at `/app`), two more validated training runs (PaLM 540B and
-Chinchilla 70B), and a known-training-clusters comparison — beyond the
-written action-plan milestones.
+Chinchilla 70B), a known-training-clusters comparison, and a unified
+threshold-comparison table — beyond the written action-plan milestones.
+
+The dashboard at `/app` is organized into five numbered sections (with a
+sticky nav to jump between them): **Estimator** (build your own estimate),
+**Hardware**, **Validation**, **Compute landscape** (company/country +
+clusters), and **Thresholds** (`app/components/Section.tsx` provides the
+consistent section chrome, `SectionNav.tsx` the nav).
 
 ## Methodology
 
@@ -158,26 +164,35 @@ model year, baseline year, and doubling time all editable — the doubling
 time in particular is actively debated, so it's exposed as an assumption,
 not baked in as a constant.
 
-## Policy scenario (illustrative)
+## Threshold comparison (illustrative)
 
-The policy-scenario table cross-references `lib/notableModels.ts` against
-the default regulatory thresholds, showing which already-trained models
-would be flagged by each threshold as currently set. This directly reflects
-a limitation the project's own strategic assessment calls out: it can show
-which known runs would cross a threshold, but it cannot predict how a lab
-would actually respond to a new rule, or how "training compute" would be
-defined or audited in practice — so the table is captioned as illustrative
-only, and always compares against thresholds' original default values
-rather than whatever a user has edited them to.
+`lib/thresholdComparison.ts` unifies three otherwise-separate datasets into
+one ranked table, so training runs and clusters can both be checked against
+thresholds in the same place rather than scattered across sections:
 
-A second table below it, "If a cluster trained one model flat-out," bridges
-in `lib/trainingClusters.ts`: since a cluster's peak *capacity* (FLOP/s)
-isn't directly comparable to a compute *threshold* (FLOPs), `runClusterScenario()`
-converts capacity into an implied compute figure — chip count x peak
-FLOPs/s x an editable duration x a per-vendor MFU default — the same
-capacity-to-compute conversion the live estimator does for user inputs,
-just applied to known clusters under an explicitly hypothetical dedicated-
-use assumption rather than to any real training run.
+- **Validated runs** — the five `lib/knownRuns.ts` fixtures, using reported
+  compute where a paper states one directly, or the 6ND estimate otherwise.
+- **Notable models** — `lib/notableModels.ts`, each with its own compute
+  figure and provenance (some entries deliberately share an underlying
+  model with a validated run, e.g. GPT-3 appears in both categories with
+  the same figure, since they describe the same real training run from two
+  different datasets built for different purposes).
+- **Clusters (hypothetical)** — `lib/trainingClusters.ts`, converted from
+  peak *capacity* (FLOP/s) into an implied compute *total* (FLOPs): chip
+  count x peak FLOPs/s x an editable duration x a per-vendor MFU default —
+  the same capacity-to-compute conversion the live estimator does for user
+  inputs, applied here to known clusters under an explicitly hypothetical
+  dedicated-use assumption, not to any real training run.
+
+The table is filterable by category and sorted by compute (a ranked
+leaderboard, not just a list), always compares against the thresholds'
+original default values rather than whatever's been edited in the panel
+above, and is captioned as **illustrative only**: it shows which already-
+known compute figures (real or hypothetical) a threshold would flag today,
+not a prediction of whether a lab would actually cross a future threshold,
+change its training approach in response, or how "training compute" would
+be defined or audited in practice — a limitation the project's own
+strategic assessment calls out directly.
 
 ## Known limitations
 

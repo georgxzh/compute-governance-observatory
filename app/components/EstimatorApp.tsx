@@ -9,7 +9,9 @@ import ThresholdPanel from "./ThresholdPanel";
 import AlgorithmicEfficiencyPanel from "./AlgorithmicEfficiencyPanel";
 import CompanyCountryChart from "./CompanyCountryChart";
 import TrainingClustersChart from "./TrainingClustersChart";
-import PolicyScenarioTable from "./PolicyScenarioTable";
+import ThresholdComparisonTable from "./ThresholdComparisonTable";
+import Section from "./Section";
+import SectionNav from "./SectionNav";
 import { DEFAULT_ELECTRICITY_USD_PER_KWH, DEFAULT_MFU_BY_VENDOR, DEFAULT_PUE, estimate } from "@/lib/estimator";
 import { getChip } from "@/lib/hardware";
 
@@ -55,20 +57,38 @@ export default function EstimatorApp() {
   }
 
   return (
-    <div className="flex flex-col gap-10">
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,380px)_1fr]">
-        <EstimatorForm value={form} onChange={handleFormChange} />
-        <div className="flex flex-col gap-8">
-          <ResultsPanel output={output} />
-          <ThresholdPanel trainingFlops={output.trainingFlops} />
-          <AlgorithmicEfficiencyPanel trainingFlops={output.trainingFlops} />
-        </div>
+    <div className="flex flex-col gap-4">
+      <SectionNav />
+
+      <div className="flex flex-col gap-14 pt-4">
+        <Section id="estimator" eyebrow="01 — Build an estimate">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,380px)_1fr]">
+            <EstimatorForm value={form} onChange={handleFormChange} />
+            <div className="flex flex-col gap-8">
+              <ResultsPanel output={output} />
+              <ThresholdPanel trainingFlops={output.trainingFlops} />
+              <AlgorithmicEfficiencyPanel trainingFlops={output.trainingFlops} />
+            </div>
+          </div>
+        </Section>
+
+        <Section id="hardware" eyebrow="02 — Hardware">
+          <HardwareTable selectedChipId={form.chipId} />
+        </Section>
+
+        <Section id="validation" eyebrow="03 — Validation">
+          <ValidationTable />
+        </Section>
+
+        <Section id="landscape" eyebrow="04 — Compute landscape">
+          <CompanyCountryChart />
+          <TrainingClustersChart />
+        </Section>
+
+        <Section id="thresholds" eyebrow="05 — Regulatory thresholds">
+          <ThresholdComparisonTable />
+        </Section>
       </div>
-      <HardwareTable selectedChipId={form.chipId} />
-      <ValidationTable />
-      <CompanyCountryChart />
-      <TrainingClustersChart />
-      <PolicyScenarioTable />
     </div>
   );
 }
