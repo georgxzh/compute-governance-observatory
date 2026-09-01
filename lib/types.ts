@@ -53,6 +53,21 @@ export interface KnownRun {
   notes?: string;
 }
 
+export interface TrainingCluster {
+  id: string;
+  name: string;
+  organization: string;
+  country: string;
+  chipId: string;
+  chipCount: number;
+  /** Is the chipCount above itself published by the operator, or a third-party estimate? */
+  chipCountProvenance: Provenance;
+  /** Year the cluster came online / was announced at this scale */
+  year: number;
+  source: string;
+  notes?: string;
+}
+
 export interface Threshold {
   id: string;
   name: string;

@@ -20,8 +20,9 @@ This covers the project's first three action-plan milestones:
 Publishing the MVP and gathering outside feedback is the last step of the
 Week 3 commitment and happens separately from this codebase. Since then,
 the site has also gained a gated landing page (`/`, linking to the
-dashboard at `/app`) and two more validated training runs (PaLM 540B and
-Chinchilla 70B), beyond the written action-plan milestones.
+dashboard at `/app`), two more validated training runs (PaLM 540B and
+Chinchilla 70B), and a known-training-clusters comparison — beyond the
+written action-plan milestones.
 
 ## Methodology
 
@@ -129,6 +130,21 @@ on a log-scale bar chart — training compute spans many orders of magnitude,
 so a linear scale would make smaller runs invisible. This is a comparison of
 each org's/country's most compute-intensive *known* model, not a measure of
 total national or organizational compute infrastructure.
+
+## Training cluster capacity
+
+`lib/trainingClusters.ts` holds a separate dataset from notable models: known
+AI training clusters/supercomputers (xAI's Colossus, Microsoft's Eagle,
+Meta's Research SuperCluster, a Google TPU v4 Pod) with their reported chip
+count. This answers a different question than the compute-comparison view
+above — *installed peak capacity* (`chip count x that chip's peak FLOPs/s`,
+from `clusterPeakFlopsPerSecond()`) rather than compute a specific model
+*consumed* during training. Coverage leans US-heavy; that's not a claim
+about where compute capacity actually concentrates, it's a reflection of
+which operators publish a verifiable chip count (official announcements,
+TOP500 listings) at the same confidence level the rest of this project
+holds itself to — the UI states this limitation directly rather than
+padding the list with less certain figures.
 
 ## Algorithmic efficiency adjustment
 

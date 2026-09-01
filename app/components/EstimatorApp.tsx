@@ -8,6 +8,7 @@ import ValidationTable from "./ValidationTable";
 import ThresholdPanel from "./ThresholdPanel";
 import AlgorithmicEfficiencyPanel from "./AlgorithmicEfficiencyPanel";
 import CompanyCountryChart from "./CompanyCountryChart";
+import TrainingClustersChart from "./TrainingClustersChart";
 import PolicyScenarioTable from "./PolicyScenarioTable";
 import { DEFAULT_ELECTRICITY_USD_PER_KWH, DEFAULT_MFU_BY_VENDOR, DEFAULT_PUE, estimate } from "@/lib/estimator";
 import { getChip } from "@/lib/hardware";
@@ -66,6 +67,7 @@ export default function EstimatorApp() {
       <HardwareTable selectedChipId={form.chipId} />
       <ValidationTable />
       <CompanyCountryChart />
+      <TrainingClustersChart />
       <PolicyScenarioTable />
     </div>
   );

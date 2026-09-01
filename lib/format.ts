@@ -15,6 +15,22 @@ export function formatFlops(flops: number): string {
   return `${flops.toExponential(2)} FLOPs`;
 }
 
+export function formatFlopsPerSecond(flopsPerSecond: number): string {
+  if (flopsPerSecond === 0) return "0 FLOP/s";
+  const units: [number, string][] = [
+    [1e18, "EFLOP/s"],
+    [1e15, "PFLOP/s"],
+    [1e12, "TFLOP/s"],
+    [1e9, "GFLOP/s"],
+  ];
+  for (const [threshold, label] of units) {
+    if (flopsPerSecond >= threshold) {
+      return `${(flopsPerSecond / threshold).toFixed(2)} ${label}`;
+    }
+  }
+  return `${flopsPerSecond.toExponential(2)} FLOP/s`;
+}
+
 export function formatScientific(n: number, digits = 2): string {
   return n.toExponential(digits).replace("e+", " x 10^");
 }

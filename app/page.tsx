@@ -24,7 +24,7 @@ const FEATURES = [
   {
     title: "Company & country compute",
     description:
-      "Notable models from OpenAI, Google DeepMind, Meta, Alibaba, DeepSeek, and TII, compared by organization and by country on a log scale.",
+      "Notable models from OpenAI, Google DeepMind, Meta, Alibaba, DeepSeek, and TII compared by compute consumed, plus known clusters like xAI's Colossus and Microsoft's Eagle compared by installed capacity.",
   },
   {
     title: "Policy scenarios",
