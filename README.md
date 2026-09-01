@@ -170,6 +170,15 @@ defined or audited in practice — so the table is captioned as illustrative
 only, and always compares against thresholds' original default values
 rather than whatever a user has edited them to.
 
+A second table below it, "If a cluster trained one model flat-out," bridges
+in `lib/trainingClusters.ts`: since a cluster's peak *capacity* (FLOP/s)
+isn't directly comparable to a compute *threshold* (FLOPs), `runClusterScenario()`
+converts capacity into an implied compute figure — chip count x peak
+FLOPs/s x an editable duration x a per-vendor MFU default — the same
+capacity-to-compute conversion the live estimator does for user inputs,
+just applied to known clusters under an explicitly hypothetical dedicated-
+use assumption rather than to any real training run.
+
 ## Known limitations
 
 - The 6ND formula assumes a dense transformer; MoE and non-transformer
