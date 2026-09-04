@@ -88,13 +88,22 @@ export default function Landing() {
           capable systems before they&apos;re deployed.
         </p>
 
-        <Link
-          href="/app"
-          className="group mt-10 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-medium text-white shadow-[0_0_40px_-8px_rgba(108,99,255,0.6)] transition-all hover:bg-accent-dark hover:shadow-[0_0_50px_-6px_rgba(108,99,255,0.8)]"
-        >
-          Enter the observatory
-          <span className="transition-transform group-hover:translate-x-1">→</span>
-        </Link>
+        <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
+          <Link
+            href="/app"
+            className="group inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-medium text-white shadow-[0_0_40px_-8px_rgba(108,99,255,0.6)] transition-all hover:bg-accent-dark hover:shadow-[0_0_50px_-6px_rgba(108,99,255,0.8)]"
+          >
+            Enter the observatory
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </Link>
+          <Link
+            href="/app?cluster=xai-colossus#clusters"
+            className="group inline-flex items-center gap-2 rounded-full border border-neutral-700 px-7 py-3 text-sm font-medium text-neutral-300 transition-colors hover:border-accent/60 hover:text-neutral-50"
+          >
+            Visualize a training cluster
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </Link>
+        </div>
 
         <div className="mt-28 grid w-full grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature) => (

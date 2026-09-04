@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { TRAINING_CLUSTERS, clusterPeakFlopsPerSecond } from "@/lib/trainingClusters";
 import { formatCount, formatFlopsPerSecond } from "@/lib/format";
 import ProvenanceBadge from "./ProvenanceBadge";
@@ -19,7 +20,12 @@ function groupTotals(groupBy: GroupBy) {
 
 export default function TrainingClustersChart() {
   const [groupBy, setGroupBy] = useState<GroupBy>("organization");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Allow linking straight into a cluster's visualization, e.g. from the
+  // landing page: /app?cluster=xai-colossus#clusters
+  const requestedId = useSearchParams().get("cluster");
+  const [selectedId, setSelectedId] = useState<string | null>(
+    requestedId && TRAINING_CLUSTERS.some((c) => c.id === requestedId) ? requestedId : null
+  );
   const selectedCluster = TRAINING_CLUSTERS.find((c) => c.id === selectedId) ?? null;
 
   const rows = useMemo(() => groupTotals(groupBy), [groupBy]);
@@ -27,7 +33,7 @@ export default function TrainingClustersChart() {
   const minLog = Math.log10(Math.min(...rows.map(([, flops]) => flops)));
 
   return (
-    <div className="flex flex-col gap-3">
+    <div id="clusters" className="flex scroll-mt-24 flex-col gap-3">
       <div>
         <h2 className="text-lg font-semibold text-neutral-100">
           Training cluster capacity by {groupBy === "organization" ? "company" : "country"}
