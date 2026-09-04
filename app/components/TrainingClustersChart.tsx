@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { TRAINING_CLUSTERS, clusterPeakFlopsPerSecond } from "@/lib/trainingClusters";
 import { formatCount, formatFlopsPerSecond } from "@/lib/format";
 import ProvenanceBadge from "./ProvenanceBadge";
+import ClusterDetail from "./ClusterDetail";
 
 type GroupBy = "organization" | "country";
 
@@ -18,6 +19,8 @@ function groupTotals(groupBy: GroupBy) {
 
 export default function TrainingClustersChart() {
   const [groupBy, setGroupBy] = useState<GroupBy>("organization");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedCluster = TRAINING_CLUSTERS.find((c) => c.id === selectedId) ?? null;
 
   const rows = useMemo(() => groupTotals(groupBy), [groupBy]);
   const maxLog = Math.log10(Math.max(...rows.map(([, flops]) => flops)));
@@ -89,10 +92,22 @@ export default function TrainingClustersChart() {
           </thead>
           <tbody>
             {TRAINING_CLUSTERS.map((cluster) => (
-              <tr key={cluster.id} className="text-neutral-300 align-top">
-                <td className="px-3 py-2 text-neutral-100">
-                  {cluster.name}
-                  <span className="ml-1 text-xs text-neutral-500">({cluster.year})</span>
+              <tr
+                key={cluster.id}
+                className={`align-top text-neutral-300 ${
+                  selectedId === cluster.id ? "bg-neutral-900/60" : ""
+                }`}
+              >
+                <td className="px-3 py-2">
+                  <button
+                    onClick={() =>
+                      setSelectedId(selectedId === cluster.id ? null : cluster.id)
+                    }
+                    className="text-left text-neutral-100 underline decoration-neutral-700 underline-offset-4 transition-colors hover:decoration-accent hover:text-accent-light"
+                  >
+                    {cluster.name}
+                    <span className="ml-1 text-xs text-neutral-500">({cluster.year})</span>
+                  </button>
                 </td>
                 <td className="px-3 py-2">{cluster.organization}</td>
                 <td className="px-3 py-2">{cluster.country}</td>
@@ -113,6 +128,15 @@ export default function TrainingClustersChart() {
           </tbody>
         </table>
       </div>
+
+      {selectedCluster ? (
+        <ClusterDetail cluster={selectedCluster} onClose={() => setSelectedId(null)} />
+      ) : (
+        <p className="text-xs text-neutral-500">
+          Click a cluster name above to see its scale visualized, its power draw, and how fast
+          it could train each of the known runs.
+        </p>
+      )}
 
       <div className="flex flex-col gap-1 text-xs text-neutral-500">
         {TRAINING_CLUSTERS.map((cluster) => (

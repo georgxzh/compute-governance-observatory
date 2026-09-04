@@ -152,6 +152,24 @@ TOP500 listings) at the same confidence level the rest of this project
 holds itself to — the UI states this limitation directly rather than
 padding the list with less certain figures.
 
+## Cluster detail view
+
+Clicking a cluster name in the clusters table opens a detail panel
+(`app/components/ClusterDetail.tsx`, math in `lib/clusterInsights.ts`) that
+makes the scale legible rather than just numeric:
+
+- **Chip grid** — one dot per N chips, on a single shared scale across every
+  cluster (`chipsPerDot()` picks N so the largest cluster lands at ~200
+  dots), so a cluster with 25x the chips visibly shows 25x the dots.
+- **Power and energy** — `clusterPowerMW()` (chip TDP x count x PUE) and
+  energy per day at continuous full load. Stated as a floor on the
+  cluster's own draw, not a facility-wide figure.
+- **"Could train..."** — `timeToTrainDays()` runs each of the five validated
+  runs against that cluster's capacity, shown next to what the run actually
+  took on its own hardware. Colossus, for instance, computes to ~11 days for
+  Llama 3.1 405B versus the 54 days Meta reported on 16,384 H100s. Flagged
+  hypothetical: it assumes one job, no downtime, restarts, or contention.
+
 ## Algorithmic efficiency adjustment
 
 `lib/algorithmicEfficiency.ts` models the well-documented effect that the
