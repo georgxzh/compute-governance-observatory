@@ -1,21 +1,12 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState } from "react";
+import Link from "next/link";
 import { TRAINING_CLUSTERS, clusterPeakFlopsPerSecond } from "@/lib/trainingClusters";
 import { formatCount, formatFlopsPerSecond } from "@/lib/format";
 import ProvenanceBadge from "./ProvenanceBadge";
-import ClusterDetail from "./ClusterDetail";
 
 type GroupBy = "organization" | "country";
-
-function subscribeToUrl(onChange: () => void) {
-  window.addEventListener("popstate", onChange);
-  return () => window.removeEventListener("popstate", onChange);
-}
-
-function getClusterParam(): string | null {
-  return new URLSearchParams(window.location.search).get("cluster");
-}
 
 function groupTotals(groupBy: GroupBy) {
   const totals = new Map<string, number>();
@@ -28,26 +19,6 @@ function groupTotals(groupBy: GroupBy) {
 
 export default function TrainingClustersChart() {
   const [groupBy, setGroupBy] = useState<GroupBy>("organization");
-  // Allow linking straight into a cluster's visualization, e.g. from the
-  // landing page: /app?cluster=xai-colossus#clusters
-  //
-  // Read via useSyncExternalStore rather than next/navigation's
-  // useSearchParams: on this statically prerendered page that hook forces
-  // the subtree up to the nearest Suspense boundary to be client-rendered,
-  // which left the whole chart non-interactive. Plain React with a null
-  // server snapshot hydrates cleanly and needs no Suspense boundary.
-  const requestedId = useSyncExternalStore(subscribeToUrl, getClusterParam, () => null);
-
-  // undefined = untouched, so the URL wins; null = the user closed the panel.
-  const [override, setOverride] = useState<string | null | undefined>(undefined);
-  const selectedId =
-    override === undefined
-      ? TRAINING_CLUSTERS.some((c) => c.id === requestedId)
-        ? requestedId
-        : null
-      : override;
-  const setSelectedId = (id: string | null) => setOverride(id);
-  const selectedCluster = TRAINING_CLUSTERS.find((c) => c.id === selectedId) ?? null;
 
   const rows = useMemo(() => groupTotals(groupBy), [groupBy]);
   const maxLog = Math.log10(Math.max(...rows.map(([, flops]) => flops)));
@@ -119,22 +90,15 @@ export default function TrainingClustersChart() {
           </thead>
           <tbody>
             {TRAINING_CLUSTERS.map((cluster) => (
-              <tr
-                key={cluster.id}
-                className={`align-top text-neutral-300 ${
-                  selectedId === cluster.id ? "bg-neutral-900/60" : ""
-                }`}
-              >
+              <tr key={cluster.id} className="align-top text-neutral-300">
                 <td className="px-3 py-2">
-                  <button
-                    onClick={() =>
-                      setSelectedId(selectedId === cluster.id ? null : cluster.id)
-                    }
-                    className="text-left text-neutral-100 underline decoration-neutral-700 underline-offset-4 transition-colors hover:decoration-accent hover:text-accent-light"
+                  <Link
+                    href={`/clusters/${cluster.id}`}
+                    className="text-left text-neutral-100 underline decoration-neutral-700 underline-offset-4 transition-colors hover:text-accent-light hover:decoration-accent"
                   >
                     {cluster.name}
                     <span className="ml-1 text-xs text-neutral-500">({cluster.year})</span>
-                  </button>
+                  </Link>
                 </td>
                 <td className="px-3 py-2">{cluster.organization}</td>
                 <td className="px-3 py-2">{cluster.country}</td>
@@ -156,14 +120,13 @@ export default function TrainingClustersChart() {
         </table>
       </div>
 
-      {selectedCluster ? (
-        <ClusterDetail cluster={selectedCluster} onClose={() => setSelectedId(null)} />
-      ) : (
-        <p className="text-xs text-neutral-500">
-          Click a cluster name above to see its scale visualized, its power draw, and how fast
-          it could train each of the known runs.
-        </p>
-      )}
+      <p className="text-xs text-neutral-500">
+        Click a cluster name to open its own page — the racks and servers drawn to scale, power
+        draw, and how fast it could train each known run.{" "}
+        <Link href="/clusters" className="text-neutral-300 underline hover:text-accent-light">
+          Browse all clusters →
+        </Link>
+      </p>
 
       <div className="flex flex-col gap-1 text-xs text-neutral-500">
         {TRAINING_CLUSTERS.map((cluster) => (

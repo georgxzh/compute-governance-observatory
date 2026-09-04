@@ -97,7 +97,7 @@ export default function Landing() {
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </Link>
           <Link
-            href="/app?cluster=xai-colossus#clusters"
+            href="/clusters"
             className="group inline-flex items-center gap-2 rounded-full border border-neutral-700 px-7 py-3 text-sm font-medium text-neutral-300 transition-colors hover:border-accent/60 hover:text-neutral-50"
           >
             Visualize a training cluster

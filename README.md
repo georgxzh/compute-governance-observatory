@@ -152,11 +152,19 @@ TOP500 listings) at the same confidence level the rest of this project
 holds itself to — the UI states this limitation directly rather than
 padding the list with less certain figures.
 
-## Cluster detail view
+## Cluster pages
 
-Clicking a cluster name in the clusters table opens a detail panel
-(`app/components/ClusterDetail.tsx`, math in `lib/clusterInsights.ts`) that
-makes the scale legible rather than just numeric:
+Clusters get their own routes, separate from the dashboard's statistics:
+`/clusters` lists them as cards (sorted by peak capacity, each with a
+miniature data-hall preview), and `/clusters/[id]` is a full page per
+cluster — `/clusters/xai-colossus`, `/clusters/google-tpu-v4-pod`, and so
+on. `generateStaticParams` prerenders one static page per cluster from the
+dataset, and `generateMetadata` gives each its own title/description, so
+they're linkable and shareable on their own.
+
+Each page uses `app/components/ClusterDetail.tsx` (math in
+`lib/clusterInsights.ts`) to make the scale legible rather than just
+numeric:
 
 - **Rack view** (`app/components/RackVisualization.tsx`, `lib/rackTopology.ts`)
   — draws the physical packaging rather than an abstract scale: one rack

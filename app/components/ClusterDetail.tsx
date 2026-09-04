@@ -1,5 +1,3 @@
-"use client";
-
 import { TrainingCluster } from "@/lib/types";
 import { getChip } from "@/lib/hardware";
 import { clusterPeakFlopsPerSecond } from "@/lib/trainingClusters";
@@ -26,37 +24,19 @@ function Stat({ label, value, sublabel }: { label: string; value: string; sublab
   );
 }
 
-export default function ClusterDetail({
-  cluster,
-  onClose,
-}: {
-  cluster: TrainingCluster;
-  onClose: () => void;
-}) {
+export default function ClusterDetail({ cluster }: { cluster: TrainingCluster }) {
   const chip = getChip(cluster.chipId);
   const mfu = clusterMfu(cluster);
   const powerMW = clusterPowerMW(cluster);
 
   return (
     <div className="flex flex-col gap-5 rounded-lg border border-accent/40 bg-neutral-950 p-5">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-base font-semibold text-neutral-100">
-            {cluster.name}{" "}
-            <span className="text-sm font-normal text-neutral-500">
-              — {cluster.organization}, {cluster.country} ({cluster.year})
-            </span>
-          </h3>
-          <p className="mt-1 text-xs text-neutral-500">
-            {formatCount(cluster.chipCount)} x {chip.name}
-          </p>
-        </div>
-        <button
-          onClick={onClose}
-          className="shrink-0 rounded-md border border-neutral-700 px-2 py-1 text-xs text-neutral-400 hover:border-neutral-500 hover:text-neutral-100"
-        >
-          Close
-        </button>
+      <div>
+        <h2 className="font-display text-2xl text-neutral-50">{cluster.name}</h2>
+        <p className="mt-1 text-sm text-neutral-500">
+          {cluster.organization}, {cluster.country} ({cluster.year}) —{" "}
+          {formatCount(cluster.chipCount)} x {chip.name}
+        </p>
       </div>
 
       <RackVisualization cluster={cluster} />
