@@ -158,9 +158,19 @@ Clicking a cluster name in the clusters table opens a detail panel
 (`app/components/ClusterDetail.tsx`, math in `lib/clusterInsights.ts`) that
 makes the scale legible rather than just numeric:
 
-- **Chip grid** — one dot per N chips, on a single shared scale across every
-  cluster (`chipsPerDot()` picks N so the largest cluster lands at ~200
-  dots), so a cluster with 25x the chips visibly shows 25x the dots.
+- **Rack view** (`app/components/RackVisualization.tsx`, `lib/rackTopology.ts`)
+  — draws the physical packaging rather than an abstract scale: one rack
+  shown as its servers stacked vertically with each server's accelerators
+  inside it, then the whole cluster as a data-hall grid of rack marks.
+  Colossus renders as 64 GPUs in a rack (8 servers x 8 GPUs, 44.8 kW) and
+  1,563 such racks; a TPU v4 pod as 64 chips in a rack and 64 racks.
+  Layouts are per-cluster where published (`topology` on a cluster) and fall
+  back to a per-chip default otherwise, each carrying its own provenance
+  badge — Colossus's 8-servers-per-rack and Google's 64-chips-per-rack are
+  `reported`; the air-cooled 4-servers-per-rack defaults are `estimated`.
+- **Floor area** — racks x ~3 m² (including aisle allowance), expressed in
+  basketball courts. Explicitly estimated: it excludes cooling, power, and
+  networking equipment.
 - **Power and energy** — `clusterPowerMW()` (chip TDP x count x PUE) and
   energy per day at continuous full load. Stated as a floor on the
   cluster's own draw, not a facility-wide figure.

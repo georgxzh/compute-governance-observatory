@@ -40,20 +40,3 @@ export function timeToTrainDays(
   return flops / effectiveFlopsPerSecond / 86_400;
 }
 
-const DOT_SCALES = [1, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10_000];
-
-/**
- * How many chips each dot represents in the chip-grid visual. Deliberately
- * one shared scale across every cluster so the grids stay comparable to
- * each other — a cluster 25x bigger should *look* 25x bigger.
- */
-export function chipsPerDot(clusters: TrainingCluster[], targetMaxDots = 200): number {
-  if (clusters.length === 0) return 1;
-  const maxChips = Math.max(...clusters.map((c) => c.chipCount));
-  const raw = maxChips / targetMaxDots;
-  return DOT_SCALES.find((scale) => scale >= raw) ?? DOT_SCALES[DOT_SCALES.length - 1];
-}
-
-export function dotCount(cluster: TrainingCluster, perDot: number): number {
-  return Math.max(1, Math.ceil(cluster.chipCount / perDot));
-}

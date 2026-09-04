@@ -23,6 +23,13 @@ export const TRAINING_CLUSTERS: TrainingCluster[] = [
     chipCount: 100_000,
     chipCountProvenance: "reported",
     year: 2024,
+    topology: {
+      chipsPerServer: 8,
+      serversPerRack: 8,
+      provenance: "reported",
+      source:
+        "Colossus uses Supermicro liquid-cooled 4U servers with 8 GPUs each, 8 servers per rack (64 GPUs/rack), grouped into 512-GPU arrays — per Supermicro's and xAI's public descriptions of the build.",
+    },
     source:
       "xAI's own announcement (Sept 2024): Colossus (Memphis, TN) came online with 100,000 NVIDIA H100 GPUs, described at the time as the largest AI training supercomputer in single-cluster operation.",
     notes:

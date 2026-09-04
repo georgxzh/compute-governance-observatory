@@ -53,6 +53,16 @@ export interface KnownRun {
   notes?: string;
 }
 
+/** How a cluster's accelerators are physically packaged into servers and racks. */
+export interface RackTopology {
+  /** Accelerators on one server/tray (e.g. 8 for an HGX/DGX baseboard) */
+  chipsPerServer: number;
+  /** Servers/trays in one rack */
+  serversPerRack: number;
+  provenance: Provenance;
+  source: string;
+}
+
 export interface TrainingCluster {
   id: string;
   name: string;
@@ -64,6 +74,8 @@ export interface TrainingCluster {
   chipCountProvenance: Provenance;
   /** Year the cluster came online / was announced at this scale */
   year: number;
+  /** Deployment-specific rack layout; falls back to a per-chip default when absent */
+  topology?: RackTopology;
   source: string;
   notes?: string;
 }

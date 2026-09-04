@@ -2,21 +2,19 @@
 
 import { TrainingCluster } from "@/lib/types";
 import { getChip } from "@/lib/hardware";
-import { clusterPeakFlopsPerSecond, TRAINING_CLUSTERS } from "@/lib/trainingClusters";
+import { clusterPeakFlopsPerSecond } from "@/lib/trainingClusters";
 import {
-  chipsPerDot,
   clusterEnergyPerDayMWh,
   clusterMfu,
   clusterPowerMW,
-  dotCount,
   timeToTrainDays,
 } from "@/lib/clusterInsights";
+import RackVisualization from "./RackVisualization";
+import { chipsPerRack, rackCount } from "@/lib/rackTopology";
 import { KNOWN_RUNS } from "@/lib/knownRuns";
 import { trainingFlops } from "@/lib/estimator";
 import { formatCount, formatDays, formatFlopsPerSecond, formatPercent } from "@/lib/format";
 import ProvenanceBadge from "./ProvenanceBadge";
-
-const PER_DOT = chipsPerDot(TRAINING_CLUSTERS);
 
 function Stat({ label, value, sublabel }: { label: string; value: string; sublabel?: string }) {
   return (
@@ -37,7 +35,6 @@ export default function ClusterDetail({
 }) {
   const chip = getChip(cluster.chipId);
   const mfu = clusterMfu(cluster);
-  const dots = dotCount(cluster, PER_DOT);
   const powerMW = clusterPowerMW(cluster);
 
   return (
@@ -62,21 +59,7 @@ export default function ClusterDetail({
         </button>
       </div>
 
-      {/* chip grid */}
-      <div className="flex flex-col gap-2">
-        <span className="text-[10px] uppercase tracking-wide text-neutral-500">
-          Scale — each dot = {formatCount(PER_DOT)} chips
-        </span>
-        <div className="flex flex-wrap gap-[3px] rounded-md border border-neutral-800 bg-neutral-900/40 p-3">
-          {Array.from({ length: dots }).map((_, i) => (
-            <span key={i} className="h-2 w-2 rounded-[2px] bg-accent" />
-          ))}
-        </div>
-        <span className="text-[10px] text-neutral-600">
-          {formatCount(dots)} dots. Every cluster in this section uses the same scale, so a
-          cluster with 10x the chips shows 10x the dots.
-        </span>
-      </div>
+      <RackVisualization cluster={cluster} />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat
@@ -93,6 +76,11 @@ export default function ClusterDetail({
           label="Energy / day"
           value={`${formatCount(clusterEnergyPerDayMWh(cluster))} MWh`}
           sublabel="at continuous full load"
+        />
+        <Stat
+          label="Racks"
+          value={formatCount(rackCount(cluster))}
+          sublabel={`${formatCount(chipsPerRack(cluster))} accelerators each`}
         />
         <Stat
           label="Assumed MFU"

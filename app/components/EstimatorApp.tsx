@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import EstimatorForm, { FormState } from "./EstimatorForm";
 import ResultsPanel from "./ResultsPanel";
 import HardwareTable from "./HardwareTable";
@@ -82,13 +82,7 @@ export default function EstimatorApp() {
 
         <Section id="landscape" eyebrow="04 — Compute landscape">
           <CompanyCountryChart />
-          {/* Suspense: TrainingClustersChart reads ?cluster= to deep-link into
-              a cluster's visualization, and this page is statically prerendered. */}
-          <Suspense
-            fallback={<p className="text-xs text-neutral-500">Loading training clusters…</p>}
-          >
-            <TrainingClustersChart />
-          </Suspense>
+          <TrainingClustersChart />
         </Section>
 
         <Section id="thresholds" eyebrow="05 — Regulatory thresholds">

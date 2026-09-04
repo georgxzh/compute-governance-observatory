@@ -1,10 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  chipsPerDot,
   clusterEnergyPerDayMWh,
   clusterMfu,
   clusterPowerMW,
-  dotCount,
   timeToTrainDays,
 } from "../lib/clusterInsights";
 import { TRAINING_CLUSTERS } from "../lib/trainingClusters";
@@ -63,29 +61,3 @@ describe("timeToTrainDays", () => {
   });
 });
 
-describe("chipsPerDot / dotCount", () => {
-  it("keeps the largest cluster at or under the target dot count", () => {
-    const perDot = chipsPerDot(TRAINING_CLUSTERS, 200);
-    for (const cluster of TRAINING_CLUSTERS) {
-      expect(dotCount(cluster, perDot)).toBeLessThanOrEqual(200);
-    }
-  });
-
-  it("gives every cluster at least one dot", () => {
-    const perDot = chipsPerDot(TRAINING_CLUSTERS, 200);
-    for (const cluster of TRAINING_CLUSTERS) {
-      expect(dotCount(cluster, perDot)).toBeGreaterThanOrEqual(1);
-    }
-  });
-
-  it("keeps clusters visually proportional on one shared scale", () => {
-    const perDot = chipsPerDot(TRAINING_CLUSTERS, 200);
-    const colossus = findCluster("xai-colossus");
-    const pod = findCluster("google-tpu-v4-pod");
-    const chipRatio = colossus.chipCount / pod.chipCount;
-    const dotRatio = dotCount(colossus, perDot) / dotCount(pod, perDot);
-    // Rounding to whole dots costs some precision, but the visual should
-    // still land within 20% of the true ratio.
-    expect(Math.abs(dotRatio - chipRatio) / chipRatio).toBeLessThan(0.2);
-  });
-});
